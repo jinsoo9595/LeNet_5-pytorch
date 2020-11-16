@@ -83,23 +83,50 @@ class LeNet5(nn.Module):
         super(LeNet5, self).__init__()
         
         self.c1 = C1()
-        self.c3_1 = C3()
-        self.c3_2 = C3()
+        self.c3 = C3()
         self.c5 = C5()
         self.f6 = F6()
         self.fcoutput = FCoutput()
         
     def forward(self, img):
         
+        # Conv Layer(C1)
+        # - input:        32x32x1
+        # - output:       28x28x6
+        # - weights:      (5x5x1 + 1)x6
+        # Sub-sampling(S2)
+        # - input:        28x28x6
+        # - output:       14x14x6
+        # - weights:      2x2x1
         output = self.c1(img)
         
-        x = self.c3_1(output)
-        output = self.c3_2(output)
-        output += x
+        # Conv Layer(C3)
+        # - input:        14x14x6
+        # - output:       10x10x16
+        # - weights:      (5x5x6 + 1)x16
+        # Sub-sampling(S4)
+        # - input:        10x10x16
+        # - output:       5x5x16
+        # - weights:      2x2x1
+        output = self.c3(output)
         
+        # Conv Layer(C5)
+        # - input:        5x5x16
+        # - output:       1x1x120
+        # - weights:      (5x5x16 + 1)x120
         output = self.c5(output)
+        
+        # Flatten Layer
         output = output.view(img.size(0), -1)
+        
+        # Fully Connected Layer(F6)
+        # - input:        120
+        # - output:       84
         output = self.f6(output)
+        
+        # Fully Connected Layer(F7)
+        # - input:        84
+        # - output:       10
         output = self.fcoutput(output)
         return output
 

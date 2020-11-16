@@ -18,7 +18,7 @@ import seaborn as sns
 
 
 # Pytorch visualization tool
-#viz = visdom.Visdom()
+viz = visdom.Visdom()
 
 # Visdom plot setting
 cur_batch_window = None
@@ -137,18 +137,18 @@ def train(epoch):
             print('Train - Epoch %d, Batch: %d, Loss: %f' % (epoch, i, loss.detach().cpu().item()))
           
             # Visualize conv filter (multiple subplots)
-            feature_map_vis(epoch,i)            
+            #feature_map_vis(epoch,i)            
 
             # classification analysis
-            t_SNE(output, labels, epoch, i)
+            #t_SNE(output, labels, epoch, i)
 
             
         # Update Visualization
-#        if viz.check_connection():
-#            cur_batch_window = viz.line(torch.Tensor(loss_list), torch.Tensor(batch_list),
-#                                     win=cur_batch_window, name='current_batch_loss',
-#                                     update=(None if cur_batch_window is None else 'replace'),
-#                                     opts=cur_batch_window_opts)
+        if viz.check_connection():
+            cur_batch_window = viz.line(torch.Tensor(loss_list), torch.Tensor(batch_list),
+                                     win=cur_batch_window, name='current_batch_loss',
+                                     update=(None if cur_batch_window is None else 'replace'),
+                                     opts=cur_batch_window_opts)
             
         loss.backward()
         optimizer.step()
@@ -182,7 +182,7 @@ def train_and_test(epoch):
 
 
 def main():
-    for e in range(1, 16):
+    for e in range(1, 11):
         train_and_test(e)
 
 
